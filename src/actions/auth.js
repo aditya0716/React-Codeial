@@ -2,6 +2,7 @@ import { APIUrls } from "../helpers/urls";
 import { getFormBody } from "../helpers/utils";
 import {
   AUTHENTICATE_USER,
+  CLEAR_AUTH_STATE,
   LOGIN_FAILED,
   LOGIN_START,
   LOGIN_SUCCESS,
@@ -117,5 +118,11 @@ export function signUp(email, password, confirmPassword, name) {
         }
         dispatch(signUpFailed(data.message));
       });
+  };
+}
+
+export function clearAuthState() {
+  return {
+    type: CLEAR_AUTH_STATE,
   };
 }

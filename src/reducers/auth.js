@@ -1,5 +1,6 @@
 import {
   AUTHENTICATE_USER,
+  CLEAR_AUTH_STATE,
   LOGIN_FAILED,
   LOGIN_START,
   LOGIN_SUCCESS,
@@ -52,6 +53,11 @@ export default function auth(state = initialAuthState, action) {
         ...state,
         user: {},
         isLoggedIn: false,
+      };
+    case CLEAR_AUTH_STATE:
+      return {
+        ...state,
+        error: null,
       };
     default:
       return state;
