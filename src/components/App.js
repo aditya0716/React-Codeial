@@ -1,15 +1,29 @@
 import { connect } from "react-redux";
 import React from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-import { fetchPosts } from "../actions/posts";
-import { Home, Navbar, Page404, Login } from "./";
-import PropTypes from "prop-types";
 
-const SignUp = () => <div>Sign-Up</div>;
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import { fetchPosts } from "../actions/posts";
+import { Home, Navbar, Page404, Login, SignUp } from "./";
+import PropTypes from "prop-types";
+import { authenticate } from "../actions/auth";
 
 class App extends React.Component {
   componentDidMount() {
     this.props.dispatch(fetchPosts());
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const user = jwt_decode(token);
+      console.log("user", user);
+      this.props.dispatch(
+        authenticate({
+          email: user.email,
+          _id: user._id,
+          name: user.name,
+        })
+      );
+    }
   }
 
   render() {
@@ -19,7 +33,7 @@ class App extends React.Component {
       <Router>
         <div>
           <Navbar />
-          {/*<PostsList posts={posts} />*/}
+
           <Switch>
             <Route
               exact
@@ -28,8 +42,8 @@ class App extends React.Component {
                 return <Home {...props} posts={posts} />;
               }}
             />
-            <Route path="/signup" component={SignUp} />
-            <Route path="/login" component={Login} />
+            <Route path="/signup" component={SignUp} />;
+            <Route path="/login" component={Login} />;
             <Route component={Page404} />
           </Switch>
         </div>
