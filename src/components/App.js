@@ -14,6 +14,8 @@ import { Home, Navbar, Page404, Login, SignUp, Settings } from "./";
 import PropTypes from "prop-types";
 import { authenticate } from "../actions/auth";
 import { getAuthTokenFromLocalStorage } from "../helpers/utils";
+import UserProfile from "./UserProfile";
+import { fetchUserFriends } from "../actions/friends";
 
 const PrivateRoute = (privateRouteProps) => {
   const { isLoggedIn, path, component: Component } = privateRouteProps;
@@ -53,11 +55,12 @@ class App extends React.Component {
           name: user.name,
         })
       );
+      this.props.dispatch(fetchUserFriends());
     }
   }
 
   render() {
-    const { posts, auth } = this.props;
+    const { posts, auth, friends } = this.props;
     console.log("PROPS:", this.props);
     return (
       <Router>
@@ -69,7 +72,14 @@ class App extends React.Component {
               exact
               path="/"
               render={(props) => {
-                return <Home {...props} posts={posts} />;
+                return (
+                  <Home
+                    {...props}
+                    posts={posts}
+                    friends={friends}
+                    isLoggedIn={auth.isLoggedIn}
+                  />
+                );
               }}
             />
             <Route path="/signup" component={SignUp} />;
@@ -77,6 +87,11 @@ class App extends React.Component {
             <PrivateRoute
               path="/setting"
               component={Settings}
+              isLoggedIn={auth.isLoggedIn}
+            />
+            <PrivateRoute
+              path="/user/:userId"
+              component={UserProfile}
               isLoggedIn={auth.isLoggedIn}
             />
             <Route component={Page404} />
@@ -91,6 +106,7 @@ function mapStateToProps(state) {
   return {
     posts: state.posts,
     auth: state.auth,
+    friends: state.friends,
   };
 }
 
