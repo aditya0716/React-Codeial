@@ -11,7 +11,7 @@ function FriendsListItem(props) {
             alt="user-pic"
           />
         </div>
-        <div className="friends-name">{props.friend.email}</div>
+        <div className="friends-name">{props.friend.name}</div>
       </Link>
     </div>
   );
